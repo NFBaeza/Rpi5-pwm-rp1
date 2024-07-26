@@ -3,10 +3,13 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -O2 
 
 # Linker settings
-LDFLAGS =
+LDFLAGS = -Linclude 
+
+# Include paths
+INCLUDE = -Iinclude
 
 # Source files
-SOURCES = main.cpp
+SOURCES = simple_logger.cpp pwm.cpp main.cpp
 
 # Object files (change extension to .o)
 OBJECTS = $(SOURCES:.cpp=.o)
@@ -19,11 +22,11 @@ all: $(EXEC)
 
 # Rule to link the executable
 $(EXEC): $(OBJECTS)
-	$(CXX) $(LDFLAGS) -o $@ $^ -lgpiod
-
+	$(CXX) $(OBJECTS) -o $@
+	
 # Compile step
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@ 
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@ 
 
 # Clean up
 clean:

@@ -1,0 +1,41 @@
+// Define base addresses
+#define RP1_BAR1 0x1f00000000
+#define RP1_BAR1_LEN 0x400000
+
+#define RP1_IO_BANK0_BASE       0x0d0000
+#define RP1_RIO0_BASE           0x0e0000
+#define RP1_PADS_BANK0_BASE     0x0f0000
+#define RP1_CLOCK_BASE          0x018000
+#define RP1_PWM0_BASE           0x098000
+#define RP1_PWM1_BASE           0x09C000
+
+#define CLK_PWM_CTRL           0x00074
+#define CLK_PWM_DIV_INT        0x00078
+#define CLK_PWM_DIV_FRAC       0x0007c
+#define CLK_PWM_SEL            0x00080
+
+#define PWM_CHAN0_CTRL          0x14
+#define PWM_CHAN1_CTRL          0x24
+#define PWM_CHAN2_CTRL          0x34
+#define PWM_CHAN3_CTRL          0x44
+
+#define PWM_CHAN_CTRL           0
+#define PWM_CHAN_RANGE          1
+#define PWM_CHAN_PHASE          2
+#define PWM_CHAN_DUTY           3
+
+#define RP1_ATOM_XOR_OFFSET 0x1000
+#define RP1_ATOM_SET_OFFSET 0x2000
+#define RP1_ATOM_CLR_OFFSET 0x3000
+
+#define PADS_BANK0_VOLTAGE_SELECT_OFFSET 0
+#define PADS_BANK0_GPIO_OFFSET 0x4
+
+#define RIO_OUT_OFFSET 0x00
+#define RIO_OE_OFFSET 0x04
+#define RIO_NOSYNC_IN_OFFSET 0x08
+#define RIO_SYNC_IN_OFFSET 0x0C
+
+//                          10987654321098765432109876543210
+#define CTRL_MASK_FUNCSEL 0b00000000000000000000000000011111
+#define PADS_MASK_OUTPUT  0b00000000000000000000000011000000
