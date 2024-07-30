@@ -1,12 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <sys/mman.h>
-#include <fcntl.h>
 #include <time.h>
 #include "simpĺe_logger.h"
-#include "rp1_reg.h"
 #include "pwm.h"
 
 using namespace std;
@@ -15,21 +10,35 @@ const uint8_t pins[2] = {12, 13};
 
 int main(void)
 {
-    printf("hola desde el main\n");
-    pwm_config_t config_pwm_0;
-    config_pwm_0.mode   = 0x06;
-    config_pwm_0.range  = 1249;
-    config_pwm_0.phase  = 0;
-    config_pwm_0.duty   = 1250/2;
-    config_pwm_0.invert = false;
+    printf("hello from main\n");
+      pwm_config_t config_pwm_0 = { 
+    .mode   = 0x02,
+    .range = 1250/2,
+    .duty = (1250)/4,
+    .use_common_config = false,
+  };
 
-    PWM_PI5 pwm12 = PWM_PI5(12, config_pwm_0);
-    PWM_PI5 pwm13 = PWM_PI5(13, config_pwm_0);
-    PWM_PI5 pwm14 = PWM_PI5(14, config_pwm_0);
-    PWM_PI5 pwm15 = PWM_PI5(15, config_pwm_0);
+  pwm_config_t config_pwm_1 = {
+    .mode   = 0x02,
+    .range = 1250/2,
+    .duty = (1250+24)/4,
+    .invert = true,
+    .use_common_config = false,
+  };
 
-    pwm12.pwm_enable(0,true,true);
+  pwm_common_config_t global_conf;
 
-    printf("adios desde el main\n");
+  PWM_PI5 pwm0(12, config_pwm_0, global_conf);
+  PWM_PI5 pwm1(13, config_pwm_1, global_conf);
+  PWM_PI5 pwm2(14, config_pwm_0, global_conf);
+  PWM_PI5 pwm3(15, config_pwm_1, global_conf);
+
+    pwm0.enable(true);
+    pwm2.enable(true);
+    
+    sleep(60);
+    
+
+    printf("bye bye from main\n");
 
 }

@@ -26,20 +26,33 @@ typedef struct
 
 typedef struct
 {
+    uint32_t pin;
+    uint32_t mode;
+    uint32_t range;
+    uint32_t phase = 0;
+    uint32_t duty;
+    bool invert = false;
+    bool use_common_config = true;
+} pwm_config_t;
+
+typedef struct
+{
     volatile uint32_t *ctl;
     volatile uint32_t *range;
     volatile uint32_t *phase;
     volatile uint32_t *duty;
+    pwm_config_t pwm_config;
 } pwm_t;
+
 
 typedef struct
 {
-    uint32_t mode;
-    uint32_t range;
-    uint32_t phase;
-    uint32_t duty;
-    bool invert;
-} pwm_config_t;
+    uint32_t clk_div_int = 1;
+    uint32_t clk_div_frac = 0;
+    uint32_t common_range = 0;
+    uint32_t common_duty = 0;
+    bool debug =  false;
+} pwm_common_config_t;
 
 typedef struct
 {
@@ -60,26 +73,38 @@ typedef struct
 
 static Logger PWM_RPI5_LOGGER("PWM LOG");
 const uint32_t PWM_CHANNEL[4]={PWM_CHAN0_CTRL/4,PWM_CHAN1_CTRL/4,PWM_CHAN2_CTRL/4,PWM_CHAN3_CTRL/4};
-static rp1_t *rp1;
+static uint32_t clk_main = 50000000;
 
 class PWM_PI5 {
 
 public:
-    PWM_PI5(int pin, pwm_config_t pwm_conf);
+    PWM_PI5(int pin, pwm_config_t pwm_config, pwm_common_config_t pwm_common_conf);
+    ~PWM_PI5();
 
-    int  pwm_enable(int id, bool Enable, bool all_pwm = false);
+    int pwm_enable(bool Enable);
+    void update_config(pwm_config_t pwm_config);
+    void release();
+    int pwm_enable_all(bool Enable);
 
 private:
+    static pwm_common_config_t pwm_common_config;
+    static rp1_t *rp1;
+    static uint32_t clk_pwm;
+    pwm_config_t pwm_conf;
+    int pwm_idx;
+    int pwm_pin;
+    
     void printbinary(uint32_t value);
-
+    uint32_t clk_create();
     void *mapgpio(off_t dev_base, off_t dev_size);
-    bool create_rp1(rp1_t **rp1);
-    int  clk_create();
-    bool create_pin(uint8_t pinnumber,  uint32_t funcmask);
-    int  pin_enable_output(uint8_t pinnumber);
-    int  getPWMIdx(int pin);
-    int  pwm_create(int id);
-    int  pwm_configuration(int id, pwm_config_t config);
+    bool create_rp1();
+    int  pwm_create();
+    void release(int id);
+    int  pwm_configuration(pwm_config_t pwm_config);
+    bool create_pin(uint32_t funcmask);
+    int  pin_enable_output();
+    int  getPWMIdx();
+    void  pwm_delete_all();
 };
 
-#endif 
+#endif  // PWM_PI5_H
